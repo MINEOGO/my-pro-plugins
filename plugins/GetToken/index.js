@@ -13,7 +13,7 @@ const {
 const ThemeStore = findByStoreName("ThemeStore");
 
 export const EMBED_COLOR = () =>
-		parseInt(resolveSemanticColor(ThemeStore.theme, semanticColors.BACKGROUND_SECONDARY).slice(1), 16),
+		parseInt(resolveSemanticColor(ThemeStore.theme, semanticColors.BACKGROUND_BASE_LOWER).slice(1), 16),
 	/* thanks Rosie (@acquite <@581573474296791211>) */
 
 	authorMods = {
