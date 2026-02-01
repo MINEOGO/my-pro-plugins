@@ -12,7 +12,7 @@ export const EMBED_COLOR = () =>
 		parseInt(
 			resolveSemanticColor(
 				ThemeStore.theme,
-				semanticColors.BACKGROUND_SECONDARY
+				semanticColors.BACKGROUND_BASE_LOWER
 			).slice(1),
 			16
 		),

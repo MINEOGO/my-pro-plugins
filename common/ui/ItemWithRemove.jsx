@@ -15,10 +15,10 @@ const stylesheet = createThemedStyleSheet({
 		borderRadius: 100,
 	},
 	label: {
-		color: semanticColors.HEADER_PRIMARY,
+		color: semanticColors.MOBILE_TEXT_HEADING_PRIMARY,
 	},
 	labelRemove: {
-		color: semanticColors.TEXT_WARNING,
+		color: semanticColors.TEXT_FEEDBACK_WARNING,
 	},
 });
 

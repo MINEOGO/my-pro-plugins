@@ -14,12 +14,12 @@ const { showSimpleActionSheet } = vendetta.metro.findByProps(
 // TODO: These styles work weirdly. iOS has cramped text, Android with low DPI probably does too. Fix?
 const styles = stylesheet.createThemedStyleSheet({
 	card: {
-		backgroundColor: vendetta.ui.semanticColors?.BACKGROUND_SECONDARY,
+		backgroundColor: vendetta.ui.semanticColors?.BACKGROUND_BASE_LOWER,
 		borderRadius: 5,
 	},
 	header: {
 		padding: 0,
-		backgroundColor: vendetta.ui.semanticColors?.BACKGROUND_TERTIARY,
+		backgroundColor: vendetta.ui.semanticColors?.BACKGROUND_BASE_LOWEST,
 		borderTopLeftRadius: 5,
 		borderTopRightRadius: 5,
 	},
