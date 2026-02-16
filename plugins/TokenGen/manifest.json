@@ -1,7 +1,7 @@
 {
 	"name": "RynzenTokenGen",
 	"description": "Adds the /token generate command, forked from https://github.com/meqativ/dumsane/tree/master/plugins/GetToken",
-	"authors": [{ "name": "tuffogo", "id": "1472903546730184816" }],
+	"authors": [{ "name": "mineogo", "id": "1472903546730184816" }],
 	"main": "index.js",
 	"vendetta": { "icon": "ic_full_server_gating_24px" }
 }
