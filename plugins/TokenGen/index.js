@@ -129,7 +129,7 @@ export default {
 							{
 								loggingName: "Token generate warning message",
 								channelId: ctx.channel.id,
-								content: "use the /token set command, or /auto-r4id with caution!",
+								content: "use the /token set command, or /auto-r4id with caution!", // hi
 							},
 							messageMods
 						);
